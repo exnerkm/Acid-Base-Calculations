@@ -1,0 +1,1739 @@
+---
+title: "Säure-Base-Gleichgewichte- <br>Eine Einführung mit R"
+output: 
+  html_document: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+  html_notebook: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+  pdf_document: 
+    fig_caption: yes
+    number_sections: yes
+    toc: yes
+---
+<h3> Dr. Kai Exner - drkaiexner@gmail.com </h3>
+
+<br><br><br><br><br><br><br>  
+
+# Vorwort  
+  
+Dieses Tutorial wurde durch den Wunsch initiiert, den Teilnehmern am Auswahlverfahren der Internationalen Chemieolympiade Lern- und Übungsmaterial zum Thema *Säure-Base-Gleichgewichte* als ein Beispiel für *chemische Gleichgewichte* an die Hand zu geben. Statt dem üblichen Format mit Theorie- und Übungsteil sollte dabei ein computergestütztes Element angeboten werden, das ein eigenständiges Experimentieren und Ausprobieren ermöglicht. Hierbei fiel die Wahl auf die Software / Programmiersprache R.[^1]  
+Warum R? R ist eine extrem leistungsfähige Statistiksoftware, die über die Statistik und Datenanalyse hinaus auf hervorragende Bibliotheken zur (numerischen) Mathematik, Matrixrechnung, Optimierung u.v.m. verfügt. R ist zudem für den privaten und akademischen Gebrauch kostenlos verfügbar, mit RStudio[^2] steht eine kostenfreie integrierte Entwicklungsumgebung bereit, die den Zugang zu und die Handhabung von R massiv erleichtert. Die einfache grafische Darstellung von Ergebnissen in R wird darüber hinaus ergänzt durch die Möglichkeit, den Programmcode ohne großen Aufwand in Apps umzugestalten, die dann eine interaktive Kontrolle von Eingabeparametern ermöglichen und somit zum Experimentieren und Visualisieren einladen. Hierdurch werden die behandelten Inhalte besser zugänglich und greifbar.  
+Gibt es andere Optionen? Die behandelten Beispiele lassen sich natürlich ebenfalls in Tabellenkalkulationsprogrammen wie EXCEL, LibreOffice (früher OpenOffice)[^3] etc. oder in einer anderen Programmiersprache wie MATLAB, Python oder Julia umsetzen.  
+  
+Das vorliegende Tutorial geht über die übliche Behandlung von Säure-Base-Gleichgewichten dahingehend hinaus, dass nicht nur die Beschreibungen für wichtige Kernfälle hergeleitet, sondern auch die Grenzfälle der jeweiligen Beschreibungen betrachtet werden. Diese Betrachtungen führen zwar i.d.R. aus dem Bereich der praktischen Relevanz hinaus, dürften aber zu einem besseren Verständnis von Zusammenhängen und dem Abgleich von Modellvorstellungen / Modellgleichungen beitragen. Sie zeigen ferner auf, wie gut letztendlich viele der üblicherweise getroffenen Annahmen sind, solange man im Bereich der Gültigkeit der für die Näherungen getroffenen Annahmen operiert.   
+
+
+
+\newpage 
+
+<br><br><br><br><br><br><br> 
+
+# Chemisches Gleichgewicht und Säure-Base-Reaktionen  
+  
+Das *chemische Gleichgewicht* [^4] gehört zum Standardrepertoire des Chemikers und beschreibt das dynamische Gleichgewicht das sich zwischen Edukten und Produkten einer chemischen Reaktion einstellt. Die Lage des chemischen Gleichgewichts wird bestimmt durch die freie Standard-Reaktionsenthalpie der Reaktion [^5], _**&Delta;**G<sup>&#x25CF;<sup/>_, und zusammengefasst in der Gleichgewichtskonstante _K_.[^6]  
+  
+\begin{equation} 
+\tag{1}
+\\  
+  K = \frac{\Pi_{i}[Produkt_{i}]^{n_{i}}}{\Pi_{i}[Edukt_{i}]^{n_{i}}} = 10^{-\frac{\Delta G^*}{R T} }
+\\  
+\end{equation}  
+  
+Ein wichtiges Teilgebiet des chemischen Gleichgewichts betrifft die Säue-Base-Gleichgewichte,[^7] mit denen wir uns im Folgenden beschäftigen wollen. Praktische Anwendungen, die mit den Säure-Base-Gleichgewichten und Reaktionen verbunden sind, sind u. a. Titrationen [^8] und Puffersysteme. [^9]   
+   
+In diesem Tutorial beschäftigen wir uns vornehmlich mit Berechnungen an Säuren. Die analoge Behandlung von Basen ist einfach durchzuführen, es müssen lediglich in den gegebenen Gleichungen statt der Dissoziationskonstanten der Säuren, die Dissoziationskonstanten der Basen eingesetzt sowie [H^+^] gegen [OH^-^] und [OH^-^] gegen [H^+^] getauscht werden. Den Zugang zum pH-Wert stellt man dann letztendlich gemäß pH = 14 - pOH wieder her. Die Umstellung ist eine gute Übung!     
+  
+Die Einteilung der verschiedenen Säuren und Basen nach Stärke sowie die tabellarische Zusammenstellung der verschiedenen Dissoziationskonstanten wird hier nicht aufgeführt, da dies an anderer Stelle ausführlich und ausreichend erfolgt, vgl. z.B. [^10], [^11], [^12].
+
+\newpage 
+<br><br><br><br><br><br><br>  
+
+# Betrachtung einer einbasigen Säure HX  
+  
+Wir betrachten zunächst eine einbasige Säure HX, die in Wasser zu H^+^ und X^-^ dissoziieren soll. Das zugehörige Gleichgewicht wird durch Gl.(2) beschrieben:  
+
+\begin{equation} 
+\tag{2}
+\\  
+  K = \frac{[H^+] * [X^-]}{[HX]}
+\\  
+\end{equation}  
+
+Hierbei steht *K* für die Gleichgewichtskonstante, die das Verhältnis der Konzentrationen von H^+^ und X^-^ zu [HX], der Konzentration der undissoziierten Säure beschreibt. Im groben Bild macht Gl.(2) Sinn: ist eine Säure stark, dann wird sie nahezu vollständig dissoziieren, d.h. [H^+^] und [X^-^] sind groß, [HX] ist klein und *K* hat einen vergleichsweise großen Wert. Im Falle einer schwachen, kaum dissoziierenden Säure dreht sich das Argument gerade um und *K* wird kleine Werte annehmen.  
+Was wir hier stillschweigend vernachlässigt haben, ist die Rolle des Wassers: insbesondere H^+^ wird nicht frei vorliegen, sondern mindestens an ein Molekül Wasser unter Bildung von H~3~O^+^ gebunden werden. Gl.(2) müsste somit treffender als Gl.(3) formuliert werden:  
+
+\begin{equation} 
+\tag{3}
+\\  
+  K = \frac{[H_{3}O^+] * [X^-]}{[HX] * [H_{2}O]}
+\\  
+\end{equation} 
+  
+Welche Gründe gibt es, mit der einfacheren Gl.(2) zu operieren? In den üblicherweise relevanten Konzentrationsbereichen ist die Konzentration des Wassers nahezu konstant (55.5 mol / l) und kann somit in *K* integriert werden. Die Konzentration von H~3~O^+^ ist identisch mit der formalen Konzentration von H^+^. Die Vorstellung, dass in wässriger Lösung unabhängige H~3~O^+^-Aggregate vorliegen, ist zudem ebenfalls eine grobe Vereinfachung. Die vermeintlich bessere Beschreibung durch Gl.(3) bringt uns also keinen Vorteil. Sie ist jedoch ein guter Hinweis darauf, dass die Beschreibung des Gleichgewichts durch Gl.(2) in sehr stark konzentrierten Lösungen ungenau wird. Dies verwundert nicht, schließlich wird die Lösung einer Säure in Wasser ab einem gewissen Punkt zu einer Lösung von Wasser in der Säure, einem sicherlich anderen Medium, das dann zumindest eine andere Gleichgewichtskonstante zur Beschreibung benötigt.  
+  
+Was wir an dieser Stelle jedoch schon einmal auf unseren Merkzettel schreiben sollten: offensichtlich operieren wir mit Näherungen, deren Gültigkeit bzw. Gültigkeitsbereich es zu prüfen gilt!  
+
+ 
+__Weiterführende Themen__  
+
+* Konzentration vs. **Aktivität**[^13]
+* Theorie der **Elektrolytlösungen**[^14]
+* Temperatur- und Druckabhängigkeit von Gleichgewichtskonstanten[^15]
+
+<br>
+
+\newpage  
+
+## Einbasige Säuren: Grenzbetrachtung - starke Säure  
+  
+Bei der einfachen Betrachtung von Gl.(2) hatten wir schon zwei Fälle diskutiert: eine starke Säure (K >> 1), die beim Lösen in Wasser nahezu vollständig dissoziiert, und eine schwache Säure (K << 1), deren Dissoziation nur wenig ausgeprägt ist.  
+
+Wie können wir uns diese beiden Fälle zu Nutze machen, um pH-Gleichgewichte zu berechnen?  
+  
+Betrachten wir zunächst eine starke Säure, z.B. HCl, und unterstellen vollständige Dissoziation. Dabei muss dann gelten [H^+^] = C~0~, wobei wir mit C~0~ die Ausgangskonzentration der Säure bezeichnen. Logarithmieren wir auf beiden Seiten, so kommen wir zur Näherungsgleichung Gl.(4), welche den pH-Wert einer starken Säure in Abhängigkeit von der Konzentration beschreibt:  
+  
+\begin{equation} 
+\tag{4}
+\\  
+  pH = -log_{10}(C_{0})
+\\  
+\end{equation} 
+  
+Gl.(4) ist in Abb.1 dargestellt. 
+  
+```{r fig.cap=paste("__Abb.1__ pH-Wert der Lösung einer starken Säure als Funktion der Konzentration."), fig.align = "center"}
+
+# Definition der Konzentrationen über %o% ("outer product") -> "Kombination" der Reihe 0.1, 0.2 ... 1 mit
+# der Reihe der Potenzen 10^-6, 10^5 ... 10^0, um über den grossen Konzentrationsbereich in jeder Konzentrations-
+# Dekade gleich viele Stützstellen zu haben. 
+
+C0 = seq(from = 0.1, to = 1, by = 0.1) %o% 10^c(-6:0)
+
+pH = -log10(C0)
+
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH")
+
+```
+  
+Anhand der Abbildung erkennen wir, dass bereits eine kleine Menge zugesetzter Säure den pH-Wert der Lösung signifikant zu niedrigen Werten verschiebt und dass sich - offensichtlich richtig - der pH-Wert einer sehr verdünnten Säure pH = 7 annähert. Doch Vorsicht! Gilt unsere Gleichung auch bei sehr niedrigen Konzentrationen?  
+Im Code für Abb.1 hatten wir die Konzentration C~0~ von 10^-7^ bis 1 mol / l laufen lassen. Ändern wir den Code und starten wir von z.B. 10^-10^ mol / l so erkennen wir ein Problem:  
+
+```{r fig.cap=paste("__Abb.2__ pH-Wert der Lösung einer starken Säure als Funktion der Konzentration."), fig.align = "center"}
+
+C0 = seq(from = 0.1, to = 1, by = 0.1) %o% 10^c(-9:0)
+
+pH = -log10(C0)
+
+par(mfrow = c(1,2))
+
+
+# Plot 1: C0 linear aufgetragen
+
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", main = "C0-Achse linear")
+
+abline(h = 7, col = "red")
+
+# Plot 2: C0 logarithmisch aufgetragen
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", log = "x", main = "C0-Achse logarithmisch")
+
+abline(h = 7, col = "red")
+
+```
+  
+Hier haben wir im wahrsten Sinne "die rote Linie" bei pH = 7 - neutrale Lösung! - überschritten. Das Ergebnis ist unsinnig, da die Zugabe einer kleinen Menge von Säure natürlich keine alkalische Lösung erzeugen kann. Offensichtlich wird das Problem auch, wenn wir für die Darstellung von C~0~ eine logarithmische Achse verwenden - oder analog log(C~0~) abtragen: strebt C~0~ gegen 0, geht der pH-Wert gegen unendlich. Das Modell bricht also bei sehr niedrigen Konzentrationen C~0~ zusammen. Woran liegt es?  
+  
+Bei der Herleitung von Gl.(4) haben wir zwei Näherungen vorgenommen. Wir haben vorausgesetzt, (a) dass die Säure vollständig dissoziiert und (b) wir haben die Autoprotolyse[^16] des Wassers vernachlässigt. Wasser ist eine **amphotere** Verbindung und kann mit sich selbst unter Bildung von H~3~O^+^ und OH^-^ reagieren, woraus sich das folgende Gleichgewicht ergibt (Gl.(5)): 
+  
+\begin{equation} 
+\tag{5}
+\\  
+  K = \frac{[H_{3}O^+] * [OH^-]}{[H_{2}O] * [H_{2}O]}
+\\  
+\end{equation}
+  
+Analog zur den bei Gl.(2) getroffenen Vereinfachungen können wir die Konzentration des Wassers in die Gleichgewichtskonstante integrieren und kommen so zur **Autoprotolysekonstante** des Wassers (Gl.(6)):  
+  
+\begin{equation} 
+\tag{6}
+\\  
+  K_{W} = [H^+] * [OH^-] = 10^{-14} mol^2 / l^2
+\\  
+\end{equation}  
+  
+Auch ohne die Zugabe einer Säure ist also immer eine gewisse Menge an Protonen vorhanden.  
+  
+Schauen wir uns zunächst die Annahme (a) an und korrigieren wir unser Modell, ohne die Autoprotolyse zu berücksichtigen. Gl.(2) können wir dann so modifizieren, dass weiterhin bei der Dissoziation gleiche Mengen an [H^+^] und [X^-^] entstehen. [HX], die Konzentration der undissoziierten Säure wird klein, aber endlich sein. [HX] können wir unter Berücksichtigung der Massenerhaltung (Gl.(7)) ausdrücken:  
+  
+\begin{equation} 
+\tag{7}
+\\  
+  C_{0} = [HX] + [X^-]
+\\  
+\end{equation}  
+  
+Bei dieser Aufstellung ist X^-^ unser Bezug, damit wir von der Protonenkonzentration unabhängig sind.  
+Unter Vernachlässigung der Autoprotolyse können wir dann noch die Vereinfachung [H^+^] = [X^-^] treffen und Gl.(2) umformulieren zu:  
+  
+\begin{equation} 
+\tag{8}
+\\  
+  K = \frac{[H^+]^2}{C_{0} - [H^+]}
+\\  
+\end{equation} 
+  
+Nach Umstellung erhalten wir daraus die folgende quadratische Gleichung zur Beschreibung der Protonenkonzentration als Funktion von C~0~:  
+  
+\begin{equation} 
+\tag{9}
+\\  
+  [H^+]^2 + K * [H^+] - K * C_{0} = 0
+\\  
+\end{equation} 
+  
+Aufgelöst nach [H^+^] ergibt sich daraus (die Lösungen im negativen Ast sind physikalisch nicht sinnvoll):  
+  
+\begin{equation} 
+\tag{10}
+\\  
+  [H^+] = - \frac{K}{2} + \sqrt{\frac{K^2}{4} + K * C_{0}}
+\\  
+\end{equation} 
+  
+Für die Dissoziationskonstante von HCl findet man üblicherweise Werte von pK~S~ = -6.1, d.h. K = 10^6.1^. Tragen wir erneut den pH-Wert als Funktion der Konzentration C~0~ auf, so finden wir das vorherige Ergebnis nahezu exakt reproduziert: bei hohen Konzentrationen der Säure ist das Ergebnis gleich gut, bei sehr kleinen Konzentrationen genauso falsch (Abb. 4). Verwunderlich ist das nicht, schließlich fehlen uns bei sehr kleinen Säurekonzentrationen weiterhin die Protonen aus der Autoprotolyse! Immerhin gibt es einen kleinen Trost: wir werden bei der Betrachtung der schwachen Säuren sehen, dass Gl.(7 - 10) uns über weite Konzentrationsbereiche gute Dienste leisten werden.     
+  
+  
+```{r fig.cap=paste("__Abb.3__ pH-Wert der Lösung einer starken Säure als Funktion der Konzentration nach Gl.(10)."), fig.align = "center"}
+
+C0 = seq(from = 0.1, to = 1, by = 0.1) %o% 10^c(-9:0)
+
+K = 10^6.1
+
+pH = -log10( -K / 2 + sqrt(K^2 / 4 + K * C0) )
+
+pHalt = -log10(C0)
+
+par(mfrow = c(1,2))
+
+
+# Plot 1: C0 linear aufgetragen
+
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", main = "C0-Achse linear")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+# Plot 2: C0 logarithmisch aufgetragen
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", log = "x", main = "C0-Achse logarithmisch")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+```
+
+Bauen wir also nun die Autoprotolyse in unsere Behandlung ein. Wir werden dabei zunächst die Näherung verwenden, dass eine starke Säure vollständig dissoziiert. Damit wird [X^-^] = C~0~. Wie kommen wir aber zu einem Ausdruck für die Protonenkonzentration? Diese muss sich ja zusammensetzen aus den Protonen, die durch die vollständige Dissoziation der Säure geliefert werden, und den Protonen aus der Autoprotolyse. Und die Protonenkonzentration, die wir in die Gleichung für das Autoprotolysegleichgewicht einsetzen müssen, ist ja wieder die Summe von Protonen aus der Dissoziation und der Autoprotolyse - ein unlösbarer Kreislauf? Ein Weg aus dem Dilemma wäre natürlich, einen Ausdruck für die Hydroxidionenkonzentration ableiten könnten, den wir dann mit der Gleichung für die Autoprotolyse kombinieren. Die so aus [OH^-^] berechnete Konzentration von H^+^ entspricht dann der gesamten Protonenkonzentration, sowohl beruhend auf den Protonen aus der Dissoziation der Säure als auch auf dem Anteil aus der Eigendissoziation des Wassers. An dieser Stelle können wir dann die **Elektroneutralitätsbedingung** heranziehen: da unsere Lösung elektrisch neutral sein muss, müssen die Summen aller Anionenkonzentrationen und Kationenkonzentrationen - jeweils multipliziert mit der Ladungszahl - gleich sein, vgl. Gl.(11):  
+  
+\begin{equation} 
+\tag{11}
+\\  
+  \sum_{i} z_{i} * [Anion_{i}] = \sum_{j} z_{j} * [Kation_{j}]
+\\  
+\end{equation} 
+  
+In unsere momentanen Näherung bedeutet dies, dass die Protonenkonzentration gleich der Summe aus den Konzentrationen von Hydroxidionen und Säureanionen X^-^ sein muss (Gl.(12)):  
+  
+\begin{equation} 
+\tag{12}
+\\  
+  [H^+] = [OH^-] + [X^-]
+\\  
+\end{equation} 
+  
+Wir können somit folgendes ableiten (Gl.(14)):  
+  
+\begin{equation}
+\tag{13} 
+\\  
+[H^+] = [OH^-] + [X^-]  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\\  
+= [OH^-] + [C_{0}]  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\\    
+= \frac {K_{W}}{[H^+]} + C_{0}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\\  
+[H^+]^2 - C_{0} * [H^+] - K_{W} = 0  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{14}
+\\  
+ => [H^+] =  \frac {C_{0}}{2} + \sqrt{\frac {C_{0}^2}{4} + K_{W} }  
+\\  
+\end{equation}  
+  
+Gl.(14) sieht vielversprechend aus: strebt C~0~ gegen 0, geht [H^+^] gegen 10^-7^, d.h. pH = 7. Für sehr hohe Konzentrationen wird C~0~ groß gegen K~W~ und [H^+^] strebt gegen C~0~! 
+  
+```{r fig.cap=paste("__Abb.4__ pH-Wert der Lösung einer starken Säure als Funktion der Konzentration nach Gl.(14)."), fig.align = "center"}
+
+C0 = seq(from = 0.1, to = 1, by = 0.1) %o% 10^c(-9:0)
+
+K = 10^6.1
+
+KW = 10^-14
+
+pH = -log10( C0 / 2 + sqrt(C0^2 / 4 + KW) )
+
+pHalt = -log10(C0)
+
+par(mfrow = c(1,2))
+
+
+# Plot 1: C0 linear aufgetragen
+
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", ylim = c(0, 14), main = "C0-Achse linear")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+# Plot 2: C0 logarithmisch aufgetragen
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", ylim = c(0, 14), log = "x", lwd = 2,
+  main = "C0-Achse logarithmisch")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+```
+  
+Um besser zu verstehen, ab welchen Konzentrationen unser erstes, vereinfachtes Modell ohne die Berücksichtigung der Autoprotolyse zusammenbricht, schauen wir uns den Konzentrationsbereich um C~0~ = 10^-7^ noch einmal genauer an (Abb.5):  
+  
+```{r fig.cap=paste("__Abb.5__ pH-Wert der Lösung einer starken Säure als Funktion der Konzentration nach Gl.(14)."), fig.align = "center"}
+
+C0 = seq(from = 0.1, to = 1, by = 0.1) %o% 10^c(-9:0)
+
+K = 10^6.1
+
+KW = 10^-14
+
+pH = -log10( C0 / 2 + sqrt(C0^2 / 4 + KW) )
+
+pHalt = -log10(C0)
+
+
+# nur der Plot mit logarithmischer Konzentrationsachse
+plot(C0, pH, "l", xlab = "C0 [mol / l]", ylab = "pH", xlim = c(1E-8, 1E-6), ylim = c(6, 8), 
+  log = "x", lwd = 2, main = "C0-Achse logarithmisch")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+```
+  
+Anhand von Abb.5 lässt sich abschätzen, dass wir bei der Berechnung von pH-Werten von Lösungen einer starken Säure immer dann den Beitrag der Autoprotolyse des Wassers vernachlässigen können, wenn die Konzentration der Säure über 10^-6^ mol / l liegt, d.h. die Säure ca. 10 x mehr Protonen liefert als das (neutrale) Wasser durch die Autoprotolyse. Ähnliche Betrachtungen werden wir im Folgenden noch häufiger treffen. Sie helfen uns, die üblichen Näherungen zu verstehen und zu bewerten.  
+Rein formal würde es sich an dieser Stelle noch gehören, für die Betrachtung der starken Säuren sowohl die Autoprotolyse als auch das Vorliegen kleiner Anteile an nicht dissoziierter Säure zu berücksichtigen. Wir wollen dies jedoch auf die Betrachtung der schwachen Säuren verschieben, da dieser Fall für die starken Säuren keine praktische Rolle spielt. In sehr stark verdünnten Lösungen, d.h. in Regionen, in denen die Autoprotolyse des Wassers relevant wird, ist die Dissoziation stark begünstigt (**Ostwaldsches Verdünnungsgesetz**), in Regionen, in denen merkliche Konzentrationen an undissoziierter Säure vorliegen, verlassen wir aufgrund der hohen Konzentrationen sicherlich den Gültigkeitsbereich von Gl.(2).  
+  
+**Weiteführende Themen**  
+  
+* Dissoziationsgrad
+* Ostwaldsches Verdünnungsgesetz
+<br>
+\newpage
+## Einbasige Säuren: Grenzbetrachtung - schwache Säure 
+
+Das "Repertoire" das wir zur Behandlung der Dissoziation einer schwachen Säure benötigen, haben wir mit Gl.(7 - 10) bereits kennengelernt. Zur Erinnerung: unsere Annahme war hier, dass wir merkliche Mengen an undissoziierter Säure vorliegen haben und die Konzentration der Protonen in der Lösung gleich der Konzentration der Säureanionen ist. Bei dieser Betrachtung werden die Protonen aus der Autoprotolyse des Wassers vernachlässigt, die Näherung wird also bei sehr kleinen Säurekonzentrationen C~0~ zusammenbrechen. Nehmen wir Essigsäure mit K = 10^-4.75^, d.h. pK = 4.75 als Beispiel und wenden Gl.(10) an kommen wir zum in Abb.7 dargestellten Verlauf des pH-Werts als Funktion der Säurekonzentration:  
+  
+```{r fig.cap=paste("__Abb.6__ pH-Wert einer Essigsäurelösung als Funktion der Konzentration nach Gl.(10)."), fig.align = "center"}
+
+C0 = seq(from = 0.1, to = 1, by = 0.1) %o% 10^c(-9:0)
+
+K = 10^-4.75
+
+pH = -log10( -K / 2 + sqrt(K^2 / 4 + K * C0) )
+
+pHalt = -log10(C0)
+
+par(mfrow = c(1,2))
+
+
+# Plot 1: C0 linear aufgetragen
+
+plot(C0, pH, "l", ylim = c(0, 10), xlab = "C0 [mol / l]", ylab = "pH", main = "C0-Achse linear")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+# Plot 2: C0 logarithmisch aufgetragen
+plot(C0, pH, "l", ylim = c(0, 10), xlab = "C0 [mol / l]", ylab = "pH", log = "x", main = "C0-Achse logarithmisch")
+
+lines(C0, pHalt, lty = "dotted")
+
+abline(h = 7, col = "red")
+
+```
+  
+Aus Abb.7 wird klar ersichtlich, dass im Vergleich zu einer starken, vollständig dissoziierenden Säure der pH-Wert deutlich höher liegt (geringere Dissoziation), sich die pH-Werte der Lösungen von starken und schwachen Säuren bei sehr hoher Verdünnung jedoch angleichen (Zunahme der Dissoziation bei steigender Verdünnung, **Ostwandsches Verdünnungsprinzip**). Wie zu erwarten, laufen wir wieder im Bereich um und unter C~0~ = 10^-7^ in das Problem, dass wir die Autoprotolyse des Wassers nicht vernachlässigen dürfen. Es ist also Zeit, sowohl die Autoprotolyse als auch das Dissoziationsgleichgewicht vollständig in unser Modell einzubauen!  
+  
+Nebenbemerkung: damit schließen wir "die Lücke nach unten", d.h. zu kleinen Konzentrationen und in einem Bereich, in dem wir aufgrund der hohen Verdünnung ideales Verhalten voraussetzen dürfen. Die Beschreibung für hohe Konzentrationen, bei denen deutlich nicht-ideales Verhalten vorliegt, bleibt auf diesem Niveau außen vor.  
+  
+Die vollständige Beschreibung für normale bis stark verdünnte Konzentrationen erreichen wir durch Kombination der Gl.(2) (Dissoziationsgleichgewicht) mit Gl.(6) (Autoprotolysekonstante des Wassers), Gl.(7) (Massenerhaltung) und Gl.(12) (Elektroneutralität). Den Ausdruck für die Protonenkonzentration als Funktion der Säurekonzentration erhalten wir nach wenigen Umformungen:  
+  
+\begin{equation}
+\tag{2}
+\\  
+K = \frac{[H^+] * [X^-]}{[HX]}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{6}
+\\  
+K_{W} = [H^+] * [OH^-]  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{7}
+\\  
+C_{0} = [HX] + [X^-]  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{7 -> 2}
+\\  
+K = \frac{[H^+] * [X^-]}{C_{0} - [X^-]}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{13}
+\\  
+[H^+] = [OH^-] + [X^-]  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{6 -> 12}
+\\  
+[X^-] = [H^+] - [OH^-] = [H^+] - \frac{K_{W}}{[H^+]}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\\  
+=> K = \frac{[H^+] * ([H^+] - \frac{K_{W}}{[H^+]})}{C_{0} - [H^+] + \frac{K_{W}}{[H^+]}}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\\  
+= \frac{[H^+]^2 - K_{W}}{C_{0} - [H^+] + \frac{K_{W}}{[H^+]}}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\\  
+= \frac{[H^+]^3 - K_{W} * [H^+]} {C_{0} * [H^+] - [H^+]^2 + K_{W}}  
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{15}
+\\  
+=> 0 = [H^+]^3 + K * [H^+]^2 - (K_{W} + K * C_{0}) *  [H^+] - K * K_{W}  
+\\  
+\end{equation}  
+  
+Gl.(15) erlaubt uns nun die exakte Beschreibung des pH-Werts der Lösung einer beliebigen (!) Säure bis hin zu unendlicher Verdünnung. Abgeleitet hatten wir Gl.(15) zur Beschreibung des Dissoziationsverhaltens einer schwachen Säure. Der Fall einer starken Säure wird dabei ebenfalls umfasst, allerdings können wir für die Beschreibung einer starken Säure die Näherungsformeln Gl.(4 & 14) heranziehen. Der Vorteil: wir müssen uns dann nicht mit der Lösung einer Gleichung 3. Grades herumschlagen! Analog ziehen wir für eine schwache Säure die Näherungslösung von Gl.(10) heran, solange wir die Autoprotolyse des Wassers vernachlässigen können (sehr niedrige Konzentration oder sehr schwache Säure).  
+Glücklicherweise bietet uns R die Möglichkeit, Nullstellen von Funktionen zu suchen, so dass Gl.(15) ihren Schrecken verliert. Eine Nebenbemerkung ist hier übrigens noch angebracht: nach Gl.(15) pH = f(C~0~) zu berechnen ist mit Aufwand verbunden. Sehr leicht ist Gl.(15) dagegen nach C~0~ aufzulösen, so dass wir C~0~ = f([H^+])^, bzw. C~0~ = f(pH) erhalten. Wir können damit eine exakte graphische Darstellung von pH vs. C~0~ erhalten, aus welcher der Praktiker leicht den zu einer bestimmten Konzentration C~0~ gehörenden pH-Wert ablesen kann. Für den Theoretiker ist dies jedoch eher unbefriedigend.    
+
+```{r fig.cap=paste("__Abb.7__ pH-Wert einer Essigsäurelösung als Funktion der Konzentration nach Gl.(10)."), fig.align = "center"}
+pC0 = seq(from = 9, to = -1, by = -0.01)
+
+C0 = 10^-pC0
+
+K = 10^-4.75
+
+KW = 1E-14
+
+pH = numeric()
+
+calcPH = function(x, c) {
+  
+  x^3 + K * x^2 - (KW + K * c) * x - K * KW
+  
+}
+
+for (c in seq_along(C0)) {
+    
+    pH[c] = -log10(uniroot(calcPH, c(0, 14), tol = 1E-14, c = C0[c])$root)
+
+}
+
+plot(C0, pH, "l", ylim = c(0, 14), log = "x", xlab = "C0 [mol / l]", ylab = "pH")
+
+grid()
+
+# Hinzufügen der pH-Berechnung nach Näherungsformel Gl.(10)
+pHGl9 = -log10( -K / 2 + sqrt(K^2 / 4 + K * C0) )
+
+lines(C0, pHGl9, lty = "dotted")
+```
+  
+<br>
+
+\newpage  
+
+## Einbasige Säuren: Dissoziationsgrad als Funktion von Säurestärke und Konzentration 
+  
+In der bisherigen Beschreibung haben wir das Augenmerk auf die Konzentration der verschiedenen im Säure-Base-Gleichgewicht auftretenden Spezies gelegt. Eine andere wichtige Betrachtungsweise beruht auf dem Dissoziationsgrad, also der Frage, zu welchem Ausmaß die Säure dissoziiert vorliegt. Der mit &alpha; bezeichnete Dissoziationsgrad berechnet sich aus der Konzentration des Säureanions zur Gesamtkonzentration der Säure C~0~, vgl. Gl.(16):  
+   
+\begin{equation}
+\tag{16}
+\\  
+\alpha =  \frac{[A^-]}{C_{0}} 
+\\  
+\end{equation} 
+
+Eine interessante Aussage über den Dissoziationsgrad als Funktion der Konzentration liefert das **Ostwaldsche Verdünnungsgesetz**, das aussagt, dass der Dissoziationsgrad einer Säure mit steigender Verdünnung zunimmt. Wir können diese Aussage überprüfen, indem wir vom Dissoziationsgleichgewicht der Säure ausgehen, die Konzentrationen der Säure und ihres Anions über den Dissoziationsgrad ausdrücken (Gl.(17)) und über die Elektroneutralitätsbedingung die Wasserstoffionenkonzentration durch die Ausgangskonzentration der Säure und ihren Dissoziationsgrad ersetzen (Gl.(18)):  
+  
+\begin{equation}
+\tag{17}
+\\  
+K =  \frac{[H^+] * [A^-]}{[HA]} = \frac {[H^+] *  \alpha * C_{0}}{(1 - \alpha) * C_{0}} 
+\\  
+\end{equation} 
+  
+\begin{equation}  
+\tag{18}
+\\  
+[H^+] =  [A^-] + [OH^-] =  \alpha * C_{0} + \frac{K_{W}}{[H^+]} 
+\\  
+\end{equation}  
+  
+\begin{equation}  
+\\  
+\tag{19}
+\\  
+\alpha * [H^+]^2  - \alpha * C_{0} * [H^+] - K_{W} = 0 
+\\  
+\end{equation}  
+  
+\begin{equation}  
+\tag{20}
+
+[H^+] = \frac{\alpha * C_{0}}{2}  + \sqrt{\frac{\alpha^2 * C_{0}^2}{4} + K_{W}} 
+
+\end{equation}  
+  
+Den Ausdruck für [H^+^] nach Gl.(20) können wir nun in Gl.(17) integrieren und erhalten:  
+  
+\begin{equation}
+\tag{21}
+\\  
+K = \frac {[H^+] *  \alpha * C_{0}}{(1 - \alpha) * C_{0}}  = \frac {(\frac{\alpha * C_{0}}{2}  + \sqrt{\frac{\alpha^2 * C_{0}^2}{4} + K_{W}} ) *  \alpha * C_{0}}{(1 - \alpha) * C_{0}}   
+\\  
+\end{equation} 
+  
+\begin{equation}
+\tag{22}
+\\  
+K = \frac {\frac{\alpha^2 * C_{0}}{2}  + \alpha * \sqrt{\frac{\alpha^2 * C_{0}^2}{4} + K_{W}}}{1 - \alpha}   
+\\  
+\end{equation} 
+  
+Gl.(22) sieht auf den ersten Blick etwas unhandlich aus, kann aber leicht in zwei Richtungen ausgewertet werden. Nehmen wir zunächst an, dass K~W~ klein gegen 1/4 &alpha;^2^ * C~0~^2^ ist. Damit erhalten wir die Abschätzung Gl.(23), die wir ohne Probleme nach &alpha; auflösen können.  
+  
+\begin{equation}
+\tag{23}
+\\  
+K = \frac{\alpha^2 * C_{0}}{1 - \alpha}  
+\\  
+\end{equation}  
+  
+  
+\begin{equation}
+\tag{24}
+\\  
+\alpha = -\frac {K}{2 * C_{0}} + \sqrt{\frac {K^2}{4 * C_{0}^2} + \frac {K}{C_{0}}}   
+\\  
+\end{equation}  
+  
+Gl.(23) und Gl.(24) hätten wir natürlich auch erhalten, wenn wir gleich zu Beginn die Abschätzung gemacht hätten, dass alle Protonen aus der Dissoziation der Säure stammen - was der Vernachlässigung der Autoprotolyse des Wassers gleichkommt. Plotten wir Gl.(24) probehalber für eine Säure mit K = 10^-4^, so finden wir das **Ostwaldsche Verdünnungsgesetz** bestätigt. Mit zunehmender Verdünnung strebt der Dissoziationsgrad der Säure gegen 1. Die mathematische Beschreibung ist dahingehend richtig, dass &alpha; bei einem Wert von 1 "sättigt", d.h. es werden auch bei unendlich großen Verdünnungen keine sinnlosen Dissoziationsgrade von z.B. > 1 vorhergesagt. Warum dann der Aufwand, den wir bei der Herleitung von Gl.(22) getrieben haben?   
+  
+```{r fig.cap=paste("__Abb.8__ Dissoziationsgrad einer Säure mit pK = 10^-4^als Funktion der Konzentration."), fig.align = "center"}
+par(mfrow = c(1,2))
+
+K = 1E-4
+
+pC0 = seq(from = -8, to = 0, by = 0.1)
+
+C0 = 10^pC0
+
+alpha = -K / 2 / C0 + sqrt(K^2 / 4 / C0^2 + K / C0)
+
+plot(C0, alpha, xlab = expression("C"[0]*" [mol / l]"), ylab = expression(alpha), "l", main = "linear")
+
+grid()
+
+plot(C0, alpha, xlab = expression("C"[0]*" [mol / l]"), ylab = expression(alpha), "l", log = "x", main = "halblogarithmisch")
+
+grid()
+
+par(mfrow = c(1,1))
+
+```
+  
+Gl.(22) wird dann interessant, wenn wir die Grenzbetrachtung für C~0~ -> 0 durchführen. Wir erhalten dann zunächst Gl.(25) und können zu Gl.(26) umstellen:  
+  
+\begin{equation}
+\tag{25}
+\\  
+K = \frac{\alpha_{\infty} * \sqrt{K_{W}}}{1 - \alpha_{\infty}}
+\\  
+\end{equation}  
+  
+\begin{equation}
+\tag{26}
+\\  
+\alpha_{\infty} = \frac{K}{K_{W} + K} = \frac{1}{\frac{\sqrt{K_{W}}}{K} + 1} = \frac{1}{\frac{10^{-7}}{K} + 1}
+\\  
+\end{equation}  
+  
+Anhand von Gl.(26) erkennen wir 10^-7^ (mol / l, die Protonenkonzentration in reinem Wasser) als kritische Grenze: eine Säure mit einer Dissoziationskonstante von K = 10^-7^ wird in Wasser bei unendlicher Verdünnung zu 50% dissoziieren. Ist die Säure stärker, strebt der Dissoziationsgrad bei unendlicher Verdünnung gegen 1. Je schwächer die Säure wird, desto mehr strebt ihr Dissoziationsgrad bei unendlicher Verdünnung gegen 0! Dieser Zusammenhang ist in Abb.9 dargestellt:    
+  
+```{r fig.cap=paste("__Abb.9__ Dissoziationsgrad bei unendlicher Verdünnung als Funktion der Dissoziationskonstante."), fig.align = "center"}
+pK = seq(from = 13, to = 0, by = -0.1)
+
+K = 10^-pK
+
+KW = 1E-14
+
+alphaInf = K / (K + sqrt(KW))
+
+plot(pK, alphaInf, xlab = "pK", ylab = expression(~alpha [~infinity]), "l")
+
+grid()
+```
+  
+  
+Als finales Kabinettstück wollen wir noch Gl.(22) auf die implizite Form F(&alpha;, C~0~, K) = 0 bringen und numerisch die Nullstellen für vorgegebene Werte von K und C~0~ finden. Die Nullstellen zu finden ist damit äquivalent, das zu vorgegebenen K- und C~0~-Werten gehörende &alpha; zu ermitteln. Abb.10 zeigt solch einen Plot als Ergebnis. In dieser Abbildung sind alle bisher getroffenen Aussagen noch einmal zusammenfassend abgebildet. Bezüglich des Dissoziationsgrades bei unendlicher Verdünnung als Funktion des pK-Werts (Bezug: Kurve für pK = 7) konvergieren die einzelnen Kurven schnell gegen &alpha;~&infin;~ = 0 bzw. 1. Dies ist dem Umstand geschuldet, dass jeder Einheitsschritt auf der pK-Skala einem Faktor von 0.1 bzw. 10 entspricht.  
+Auf der Seite hoher Konzentrationen wird die Beschreibung sicherlich rasch ihre Gültigkeit verlieren, da sich die Lösungen zunehmend nicht-ideal verhalten werden. Anders als auf der Seite geringer Verdünnungen erhalten wir hier aber keine formal unsinnigen Vorhersagen so dass wir hier auf diesem Niveau keine weiteren Einblicke gewinnen können (vgl. im Gegensatz dazu die Diskussion zu "alkalischen" Säurelösungen bei der Verwendung von Näherungslösungen außerhalb ihres Gültigkeitsbereiches).  
+   
+
+```{r fig.cap=paste("__Abb.10__ Dissoziationsgrad als Funktion der Konzentration und der Dissoziationskonstante (pK = 0, 1, ... 10)."), fig.align = "center"}
+pC0 = seq(from = 10, to = 0, by = -0.01)
+
+C0 = 10^-pC0
+
+pK = seq(from = 10, to = 0, by = -1)
+
+K = 10^-pK
+
+KW = 1E-14
+
+alpha = matrix(nrow = length(C0), ncol = length(K))
+
+calcAlpha = function(x, n, s) {
+  
+  x^2 / 2 / (1 - x) * C0[n] + x / (1 - x) * sqrt(C0[n]^2 * x^2 / 4 + KW) - K[s]
+  
+}
+
+for (k in seq_along(K)) {
+  
+  for (c in seq_along(C0)) {
+    
+    alpha[c,k] = uniroot(calcAlpha, c(0, 1), tol = 1E-14, n = c, s = k)$root
+    
+  }
+  
+}
+
+plot(C0, alpha[,1], "l", xlim = c(1E-10, 1), ylim = c(1E-14, 1), log = "x",
+  xlab = expression("C"[0]*" [mol / l]"), ylab = "Dissoziationsgrad")
+
+grid()
+
+for (s in seq_along(K)) {
+  
+  lines(C0, alpha[,s], "l")
+}
+
+text(10^-9.5, 0.84, "pK = 6")
+
+text(10^-9.5, 0.41, "pK = 7")
+
+text(10^-9.5, 0.15, "pK = 8")
+
+```
+  
+Um wieder den Bezug zu den eher praktisch orientierten Fragen herzustellen, sei zu guter Letzt noch ein "Schnitt" aus Abb.10 dargestellt: der Dissoziationsgrad einer Säure mit Konzentration 0.1 mol / l als Funktion des pK-Werts (Abb.11). Man erkennt, dass unterhalb von pK = 0 die Säure zu mehr als 90% dissoziiert vorliegt und unterhalb von pK = 2 die Dissoziation signifikant wird (> 25%).  
+  
+```{r fig.cap=paste("__Abb.11__ Dissoziationsgrad einer Säure mit C~0~ = 0.1 mol / l als Funktion des pK-Werts."), fig.align = "center"}
+
+C0 = 0.1 
+
+pK = seq(from = -2, to = 5, by = 0.1)
+
+K = 10^-pK
+
+alpha = -K / 2 / C0 + sqrt(K^2 / 4 / C0^2 + K / C0)
+
+plot(pK, alpha, xlab = "pK", ylab = expression(alpha), "l")
+
+grid()
+
+```
+  
+\newpage 
+<br><br><br><br><br><br><br> 
+
+# log-pH-Diagramme
+  
+Wir hatten uns in Kapitel 3 damit beschäftigt, den pH-Wert einer Säurelösung als Funktion der Säurekonzentration zu berechnen. Dabei hatten wir festgestellt, dass wir recht schnell zu Gleichungen höheren Grades kommen, die analytisch schlecht oder ggf. gar nicht mehr handhabbar sind. Die in vielen Fällen gut zutreffenden Näherungslösungen für schwache bzw. starke Säuren sind daher eine gute und vor allem große Hilfe.  
+Bei der Herleitung der pH-Werte haben wir den Fokus naturgemäß auf die Protonenkonzentration gelegt und die restlichen Ionen vernachlässigt. Wir wollen dies nun nachholen und für ein- und zweibasige Säuren die sogenannten Log-pH-Diagramme ableiten. In diesen Diagrammen werden die Konzentrationen aller im System auftretenden Ionen als Funktion des pH-Werts beschrieben. Da wird den pH-Wert bei diesen Berechnungen vorgeben, fallen zwei Probleme weg: wir brauchen uns nicht mehr explizit um den Einfluss der Autoprotolyse des Wassers zu kümmern, da wir die totale und somit tatsächliche Protonenkonzentration vorgeben, und wir werden keine Gleichungen höheren Grades auflösen müssen. Am Beispiel des Log-pH-Diagramms für eine zweibasige Säure werden wir zudem ein allgemeines Schema ableiten, das wir zur Beschreibung von Säuren mit beliebiger Zahl von Protonen heranziehen können - wenngleich sich die praktische Bedeutung bei drei- und höher-protonigen Säuren sicherlich schnell erschöpft...  
+Die Log-pH-Diagramme werden uns auch erlauben, weitere wichtige Näherungsformeln für pH-Berechnungen, z.B. für Pufferlösungen abzuleiten.  
+  
+<br>  
+
+\newpage  
+  
+## log-pH-Diagramm einer einbasigen Säure  
+  
+In einem log-pH-Diagramm tragen wir nach Konvention den pH-Wert auf der x-Achse, log~10~(C), den dekadischen Logarithmus der Konzentration der im System vorhandenen Spezies, auf der y-Achse ab.  
+  
+Zwei wichtige Kennlinien werden durch die Autoprotolyse des Wassers festgelegt:
+  
+\begin{equation} 
+\tag{6}
+\\  
+K_{W} = [H^+] * [OH^-] = 10^{-14} mol^2 / l^2
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{27}
+\\  
+pK_{W} = pH + pOH  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{28}
+\\  
+pOH = 14 - pH  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{29}
+\\  
+log_{10}([OH^-]) = -14 + pH  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{30}
+\\  
+log_{10}([H^+]) = -pH  
+\\
+\end{equation}  
+  
+Diese beiden Geraden stellen die Diagonalen unseres Diagramms dar und schneiden sich grundsätzlich bei pH = 7 und log~10~(C) = -7.  
+  
+Die Ausdrücke für die Konzentrationen von undissoziierter Säure HA und Säureanion A^-^ erhalten wir durch wenige Umformungen aus dem Ausdruck für das Dissoziationsgleichgewicht in Kombination mit der Massenerhaltung:  
+  
+\begin{equation} 
+\tag{2}
+\\  
+K = \frac{[H^+] * [A^-]}{[HA]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{31}
+\\  
+K = \frac{[H^+] * [A^-]}{C_{0} - [A^-]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{32}
+\\  
+K * C_{0} - K * [A^-] = [H^+] * [A^-]
+\\  
+\end{equation}   
+  
+\begin{equation} 
+\tag{33}
+\\  
+[A^-] = \frac{K * C_{0}}{[H^+] + K} = \frac{C_{0}}{\frac{[H^+]}{K} + 1}  
+\\  
+\end{equation}  
+  
+Bei Gl.(33) können wir zwei wichtige Abschätzungen vornehmen: ist die Protonenkonzentration deutlich größer als die Dissoziationskonstante K ([H^+^] >> K), vereinfacht sich Gl.(33) zu Gl.(34), bzw. in logarithmierter Form Gl.(35).  
+  
+\begin{equation} 
+\tag{34}
+\\  
+[A^-] = \frac{K * C_{0}}{[H^+] + K} = \frac{C_{0}}{\frac{[H^+]}{K}} 
+\\  
+\end{equation} 
+  
+\begin{equation} 
+\tag{35}
+\\  
+log_{10}([A^-]) = log_{10}(C_{0}) - pK + pH 
+\\  
+\end{equation}  
+  
+Wir bekommen also im Log-pH-Diagramm für die Konzentration von [A^-^] bei niedrigen pH-Werten eine Gerade mit Steigung 1 und dem Ordinatenabschnitt -pK.  
+  
+Analog erhalten wir für hohe pH-Werte, bei denen [H^+^] << K gilt, aus Gl.(13) die Näherung [A^-^] &#8776; C~0~, bzw. log~10~([A^-^]) = log~10~(C~0~), d.h. eine Parallele zur pH-Achse mit Ordinatenwert log~10~(C~0~).  
+  
+Für die Konzentration der nicht-dissoziierten Säure HA können wir analog herleiten:  
+  
+\begin{equation} 
+\tag{2}
+\\  
+K = \frac{[H^+] * [A^-]}{[HA]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{36}
+\\  
+K = \frac{[H^+] * ([HA] - C_{0})}{[HA]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{37}
+\\  
+K * [HA] = [H^+] * C_{0} - [H^+] * [HA]  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{38}
+\\  
+[HA] = \frac{[H^+] * C_{0}}{[H^+] + K} = \frac{C_{0}}{\frac{K}{[H^+]} + 1}  
+\\  
+\end{equation} 
+  
+Unsere Grenzbetrachtung für das Regime [H^+^] >> K führt nun für Gl.(38) auf die Näherung [HA] = C~0~, bzw. log~10~([HA]) = log~10~(C~0~). Für [H^+^] << K erhalten wir näherungsweise Gl.(39) bzw. Gl.(40) nach logarithmieren:  
+  
+\begin{equation} 
+\tag{39}
+\\  
+[HA] = \frac{C_{0}}{\frac{K}{[H^+]}} 
+\\  
+\end{equation} 
+  
+\begin{equation} 
+\tag{40}
+\\  
+log_{10}([HA]) = log_{10}(C_{0}) + pK - pH 
+\\  
+\end{equation} 
+
+Für sehr niedrige pH-Werte liegt die Konzentration der nicht-dissoziierten Säure somit bei C~0~, bei hohen pH-Werten wird die Konzentration von [HA] durch eine Gerade mit Steigung 1 (im Log-pH-Diagramm!) und Ordinatenabschnitt pK beschrieben.  
+  
+Bevor wir weitere Aussagen ableiten, stellen wir die bisher erarbeiteten Zusammenhänge für das Beispiel Essigsäure mit pK = 4.75 und C~0~ = 0.1 mol / l dar.  
+  
+
+```{r fig.cap=paste("__Abb.12__ Dissoziationsgrad bei unendlicher Verdünnung als Funktion der Dissoziationskonstante."), fig.width = 7, fig.height = 7, fig.align = "center"}
+
+par(mar = c(5,5,5,5) + 0.1)
+
+Kw = 1E-14
+
+K = 10^-4.75
+
+C0 = 0.1
+
+# pH-Werte für Berechnung der einzelnen Konzentrationen
+pH = seq(from = 0, to = 14, length.out = 100)
+
+# Protonenkonzentrationen an den einzelnen "Stützstellen" 
+H = 10^-pH
+
+OH = Kw / H
+
+HA = C0 / ((K / H) + 1)
+
+A = C0 / ((H / K) + 1)
+
+
+plot(pH, log10(H), "l", xlab = "", ylab = "", xlim = c(0, 14), ylim = c(-14, 0), axes  = FALSE)
+
+pHMarker = c(0:14)
+
+cMarker = 10 ^ -pHMarker
+
+abline(h = log10(cMarker), col = "grey")
+
+abline(v = pHMarker, col = "grey")
+
+# Nochmal plotten, um die Gridlines zu überschreiben
+lines(pH, log10(H), "l", xlab = "", ylab = "", xlim = c(0, 14), ylim = c(-14, 0))
+
+lines(pH, log10(OH), "l")
+
+# Konzentrationen von HA und A- plotten
+lines(pH, log10(HA), "l", col = "red", lwd = 2)
+
+lines(pH, log10(A), "l", col = "red", lwd = 2)
+
+# Vertikale Linie bei pH = pK
+abline(v = -log10(K), col = "red")
+
+axis(2)
+
+mtext("log(C)", side = 2, line = 3)
+
+axis(3)
+
+mtext("pH", side = 3, line = 3)
+
+# Linien und wichtige Schnittpunkte markieren
+
+text(1, -14, expression("["*OH^"-"~"]") )
+
+text(13, -14, expression("["*H^"+"~"]") )
+
+text(-log10(K) + 1, -14, "pH = pKs")
+
+text(0.5, log10(C0) - 1, expression("["*HA*"]"))
+
+text(13.5, log10(C0) - 1, expression("["*A^"-"~"]"))
+
+box()
+```
+ 
+  
+An der **Säurelinie** [HA] im Diagramm ist abzulesen, dass die Konzentration der undissoziierten Säure bis kurz vor pH = pKs sehr nah bei C~0~ liegt, d.h. die Säure ist unterhalb von pH = pKs nahezu undissoziiert. Bei pH = pKs schneidet dann die **Säurelinie** die **Basenlinie** [A^-^]. Beide Konzentrationen liegen dann bei C~0~/2 womit gilt:  log~10~([HA]) = log~10~([A^-^]) = log~10~(C~0~) - log~10~(2) = log~10~(C~0~) - 0.301. Im Bereich um pH = pKs ändern sich die Konzentrationen von HA und A^-^ besonders stark, laut Diagramm um einen Faktor 10 bzw. 90% von C~0~ innerhalb eines Bereiches von pH = pKs +/- 1. Bei der praktischen Durchführung würde man also um pH = pKs herum sehr große Mengen an Säure oder Base zufügen müssen, um eine pH-Änderung zu erreichen. Anders herum betrachtet ist der pH-Wert des Systems in diesem Bereich sehr stabil, weshalb dieser Bereich auch **Pufferbereich** genannt wird. Wir werden dieses Verhalten später auch noch bei der Betrachtung von Titrationsdiagrammen diskutieren.  
+Wir haben im Diagramm noch zwei weitere markante Punkte, die zu diskutieren sind. Im hohen pH-Bereich finden wir einen Schnittpunkt der Säurelinie mit der Linie der OH^-^-Konzentration. An diesem Punkt gilt also [HA] = [OH^-^]. Wie können wir diesen Punkt deuten?  
+Da Essigsäure eine schwache Säure ist, muss ihr Anion eine vergleichsweise starke Base sein. Das Acetation sollte somit Wasser zu einem gewissen Grad deprotonieren, wobei wir annehmen können, dass einerseits die Konzentration der gebildeten Hydroxidionen gleich der Konzentration der gebildeten, undissoziierten Säure ist - was impliziert, dass wir die Hydroxidionen aus der Autoprotolyse des Wassers vernachlässigen. Ferner können wir annehmen, dass die Konzentration der Acetationen nahezu unverändert bleibt, was nach Blick in das log-pH-Diagramm offensichtlich eine legitime Näherung ist. Wir können somit ableiten:  
+  
+\begin{equation} 
+\tag{2}
+\\  
+K = \frac{[H^+] * [A^-]}{[HA]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{41}
+\\  
+K = \frac{[H^+] * (C_{0} - [OH^-])}{[OH^-]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{42}
+\\  
+K = \frac{[H^+] * C_{0}}{[OH^-]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{43}
+\\
+K = \frac{[H^+] * C_{0}}{\frac{K_{W}}{[H^+]}}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{44}
+\\  
+[H^+] = \sqrt{\frac{K * K_{W}}{C_{0}}}  
+\\  
+\end{equation}  
+  
+Mit Gl.(44) haben wir eine Näherungslösung für den pH-Wert der Lösung des Salzes einer schwachen Säure hergeleitet. Ob die verwendeten Näherungen gelten, können wir direkt im log-pH-Diagramm ablesen. Je stärker die Säure, um so näher wird der pH-Wert ihrer Salzlösung an pH = 7 rücken. 
+  
+Analog können wir noch den Schnittpunkt der Basenlinie mit der Line der Konzentration der Protonen betrachten. Hier treffen wir die Annahme, dass die Protonen vollständig aus der Dissoziation der Säure stammen und die Säure nur schwach dissoziiert ist. Damit soll [HA] = C~0~ gelten - was wir wiederum im log-pH-Diagramm als zulässige Näherung erkennen. Die Annahme [H^+^] = [A^-^] folgt natürlich aus der Wahl des Punktes, wir werden diesem Umstand aber auch als Näherung für die Beschreibung durch das Massenwirkungsgesetz verwenden.  
+  
+\begin{equation} 
+\tag{2}
+\\  
+K = \frac{[H^+] * [A^-]}{[HA]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{45}
+\\  
+K = \frac{[H^+] * [A^-]}{C_{0} - [A^-]}  
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{46}
+\\  
+K = \frac{[H^+]^2}{C_{0}}
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{47}
+\\  
+[H^+] = \sqrt{K * C_{0}}  
+\\  
+\end{equation}  
+  
+Mit Gl.(47) steht uns eine Näherungsgleichung zur Verfügung, mit der wir den pH-Wert der Lösung einer schwachen Säure berechnen können. Wieder erlaubt und das log-pH-Diagramm eine Prüfung der getroffenen Annahmen.  
+  
+Für alle Fälle, in denen die Näherungsformeln Gl.(44 & 47) nicht mehr zuverlässig anwendbar sind, bieten die Gleichungen Gl.(6, 33 & 38 eine interessante Option, den pH-Wert einer reinen Säure oder Salzlösung einer einprotonigen Säure zu berechnen. Da Gl.(6, 33 & 38) ohne Verwendung von Näherungen hergeleitet wurden, liefern sie bei Vorgabe des pH-Wertes die exakten Konzentrationen aller relevanten Spezies in der Lösung. Bei Vorgabe des "richtigen" pH-Werts muss dann natürlich die Elektroneutralität gewährleistet sein, d.h. Gl.(11) muss erfüllt sein (bei Berechnungen für Salzlösungen das Kation nicht vergessen!). Bei Vorgabe eines "falschen" pH-Werts würden wir entweder einen positiven oder negativen Ladungsüberschuss berechnen. Den exakten pH-Wert der Lösung können wir somit numerisch-iterativ z.B. durch Intervallschachtelung ermitteln, indem wir den "Neutralpunkt" immer weiter zwischen einem zu kleinen bzw. zu hohem pH-Wert eingrenzen. Etwas mathematischer ausgedrückt finden wir den pH-Wert durch Nullstellensuche bei der Funktion der Gesamtladung.  
+  
+<br> 
+
+\newpage  
+
+## log-pH-Diagramm einer zweibasigen Säure  
+  
+Bei der Herleitung der für das log-pH-Diagramm einer zweibasigen Säure notwendigen Gleichungen werden wir neben weiteren hilfreichen Näherungsformel auch allgemeine Ausdrücke für die Konzentrationen der auftretenden Spezies als Funktion des pH-Wertes entwickeln. Diese sind hilfreiche Bausteine, wenn wir den pH-Wert beliebiger Säure-Base-Mischungen berechnen wollen.  
+  
+Ausgangspukt für die folgenden Herleitungen sind die beiden Dissoziationsgleichgewichte für die erste und zweite Dissoziationsstufe, Gl.(48) und Gl.(49).  
+  
+\begin{equation} 
+\tag{48}
+\\  
+K_{1} = \frac{[H^+] * [HA^-]}{[H_{2}A]}
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{49}
+\\  
+K_{2} = \frac{[H^+] * [A^{2-}]}{[HA^-]}
+\\  
+\end{equation}  
+  
+Ziel ist nun, die Gleichungen für alle auftretenden Säurekomponenten auf entweder die Konzentration der undissoziierten Säure oder des Anions A^2-^ zurückzuführen. Wir werden hier die Beschreibung über das Anion A^2-^ wählen.  
+Im ersten Schritt erhalten wir aus Gl.(48) und Gl.(49) die folgenden Ausdrücke:  
+  
+\begin{equation} 
+\tag{50}
+\\  
+[H_{2}A] = \frac{[H^+]}{K_{1}}* [HA^-]
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{51}
+\\  
+[HA^-] = \frac{[H^+]}{K_{2}}* [A^{2-}]
+\\  
+\end{equation}  
+  
+Die Kombination von Gl.(50) und Gl.(51) liefert dann:  
+  
+\begin{equation} 
+\tag{52}
+\\  
+[H_{2}A] = \frac{[H^+]^2}{K_{1} * K_{2}} * [A^{2-}]
+\\  
+\end{equation}   
+  
+Über die Massenbilanz können wir nun noch die Konzentrationen mit der Gesamtkonzentration C~0~ verknüpfen, womit sich für [A^2-^] letztendlich ergibt:  
+  
+\begin{equation} 
+\tag{53}
+\\  
+[A^{2-}] = C_{0} - [H_{2}A] - [HA^-]
+\\  
+\end{equation}   
+  
+\begin{equation} 
+\tag{54}
+\\  
+[A^{2-}] = C_{0} - \frac{[H^+]^2}{K_{1} * K_{2}} * [A^{2-}] - \frac{[H^+]}{K_{2}}* [A^{2-}]
+\\  
+\end{equation}   
+  
+  
+\begin{equation} 
+\tag{55}
+\\  
+[A^{2-}] = \frac{C_{0}}{1 + \frac{[H^+]}{K_{2}} + \frac{[H^+]^2}{K_{1} * K_{2}}}
+\\  
+\end{equation}   
+  
+Einsetzen von Gl.(55) in Gl.(51) und Gl.(50) liefert dann die folgenden Ausdrücke für die Konzentrationen für [HA^-^] und [HA]:  
+  
+\begin{equation} 
+\tag{56}
+\\  
+[HA^-] = \frac{[H^+]}{K_{2}}* \frac{C_{0}}{1 + \frac{[H^+]}{K_{2}} + \frac{[H^+]^2}{K_{1} * K_{2}}}
+\\  
+\end{equation}   
+  
+\begin{equation} 
+\tag{57}
+\\  
+[H_{2}A] = \frac{[H^+]^2}{K_{1} * K_{2}}* \frac{C_{0}}{1 + \frac{[H^+]}{K_{2}} + \frac{[H^+]^2}{K_{1} * K_{2}}}
+\\  
+\end{equation}   
+  
+In den Gleichungen Gl.(55), Gl.(56) und Gl.(57) ist eine Gesetzmäßigkeit zu erkennen, die es uns erlaubt, allgemeine Gleichungen für eine beliebige, n-basige Säure aufzustellen:  
+  
+\begin{equation} 
+\tag{58}
+\\  
+[A^{n-}] = \frac{C_{0}}{\sum_{i = 0}^{n}{\frac{[H^+]^i}{\Pi_{k = 0}^{i} K_{k}}}} \qquad ;K_{0} = 1
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{59}
+\\  
+[H_{m}A^{(n - m)-}] = {\frac{[H^+]^m}{\prod_{j = 0}^{m} K_{j}}} * [A^{n-}]\qquad ; K_{0} = 1
+\\  
+\end{equation}  
+  
+Wenn wir bei der Herleitung all dieser Gleichungen nicht auf der Konzentration von A^n-^ sondern auf der Konzentration von H~n~A aufbauen, so kommen wir zu den Gleichungen Gl.(60), Gl.(61) und Gl.(62), die wir aus Gl.(55) - G.(57) auch erhalten, wenn wir Zähler und Nenner jeweils mit K~1~ * K~2~ / [H^+^]^2^ erweitern:  
+  
+\begin{equation} 
+\tag{60}
+\\  
+[H_{2}A] = \frac{C_{0}}{1 + \frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2}}
+\\  
+\end{equation}   
+  
+  
+\begin{equation} 
+\tag{61}
+\\  
+[HA^-] = \frac{K_{1}}{[H^+]}* \frac{C_{0}}{1 + \frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2}}
+\\  
+\end{equation}   
+  
+\begin{equation} 
+\tag{62}
+\\  
+[A^{2-}] = \frac{K_{1} * K_{2}}{[H^+]^2}* \frac{C_{0}}{1 + \frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2}}
+\\  
+\end{equation}   
+  
+Analog zu den allgemeinen Gleichungen Gl.(58) und Gl.(59) erhalten wir damit:  
+  
+\begin{equation} 
+\tag{63}
+\\  
+[H_{n}A] = \frac{C_{0}}{\sum_{i = 0}^{n}{\frac{\Pi_{k = 0}^{i} K_{k}}{[H^+]^i}}} \qquad ;K_{0} = 1
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{64}
+\\  
+[H_{m}A^{(n - m)-}] = {\frac{\prod_{j = 0}^{m} K_{j}}{[H^+]^{n - m}}} * [H_{n}A]\qquad ; K_{0} = 1
+\\  
+\end{equation}  
+  
+Die Beschreibungen des Systems als Funktion von C~0~ und [H^+^] über Gl.(58 & 59) bzw. Gl.(63 & 64) sind vollständig äquivalent, beide Ansätze unterscheiden sich nur dahingehend, dass zunächst entweder [H~n~A] oder [A^n-^] berechnet wird.  
+  
+Kehren wir nun wieder zum log-pH-Diagramm einer zweibasigen Säure zurück. Wie im Fall der einbasigen Säure wollen wir aus den Gleichungen Gl.(55) - Gl.(57) oder den analogen Formulierungen Gl.(60) - Gl.(62) die Konstruktionsprinzipien für die Kurven der undissoziierte Säure sowie ihrer beiden Anionen ableiteten. 
+  
+Anhand von Gl.(60) ist leicht zu sehen, dass im Bereich [H^+^] > K~1~ (damit gilt automatisch [H^+^] > K~2~ - bis auf sehr exotische Fälle, in denen das Monoanion eine stärkere Säure ist als die undissoziierte Säure. Sind hier Beispiele bekannt?) die Näherung [H~n~A] = C~0~ gilt. Dies ist der erste Kurvenast für [H~n~A], der im Diagramm waagerecht verlaufen muss.
+  Bei pH-Werten oberhalb von pK~2~ ([H^+^] < K~2~) wird der Term K~1~ * K~2~ / [H^+^]^2^ groß gegenüber den anderen Termen im Nennen von Gl.(60), weshalb diese näherungsweise vernachlässigt werden können. Gl.(60) geht damit über in Gl.(65):  
+  
+  
+\begin{equation} 
+\tag{65}
+\\  
+[H_{2}A] \approx \frac{C_{0}}{\frac{K_{1} * K_{2}}{[H^+]^2}} = \frac{C_{0} * [H^+]^2}{K_{1} * K_{2}}
+\\  
+\end{equation}  
+  
+oder in logarithmierter Form:  
+  
+\begin{equation} 
+\tag{66}
+\\  
+log_{10}([H_{2}A]) \approx log_{10}(C_{0}) - 2 * pH + pK_{1} + pK_{2}  
+\\  
+\end{equation}  
+  
+Im hohen pH-Bereich wird [H~n~A] somit als Gerade mit Steigung -2 im log(C)-pH-Diagramm beschrieben. Der Ordinatenabschnitt der Geraden liegt dabei bei log~10~(C~0~) + pK~1~ + pK~2~.  
+  
+Was ist für einen mittleren pH-Bereich zu erwarten, in dem gilt K~1~ > [H^+^] > K~2~? Um dies zu prüfen, plotten wir die beiden im Nenner von Gl.(60) auftretenden Terme als Funktion des pH-Werts für eine Säure mit pK~1~ = 4 und pK~2~ = 8 (Abb.13).  
+  
+```{r fig.cap=paste("__Abb.13__ Plot der in Gl.(V49) auftretenden Terme als Funktion des pH-Werts."), fig.align = "center"}
+
+K1 = 10^-4
+
+K2 = 10^-8
+
+pH = seq(4, 8, 0.1)
+
+K1_H = K1 / 10^-pH
+
+K1K2_H2 = K1 * K2 / (10^-pH)^2
+
+plot(pH, K1_H, "l", log = "y", ylim = c(0.01, 10000), lwd = 2, ylab = "")
+
+lines(pH, K1K2_H2, "l", col = "red", lwd = 2)
+
+abline(h = 1, col  = "grey")
+
+legend("topleft", legend = c(expression("K"[1]*" / "*"["*H^"+"~"]"), expression("K"[1]*"K"[2]*" / "*"["*H^"+"~"]"^2)),
+  lwd = 2, col = c("black", "red"))
+```
+  
+Offensichtlich dominiert der Ausdruck K~1~ / [H^+^] gegenüber allen anderen Termen im Nenner von Gl.(60), solange der pH-Wert zwischen ca. pH = 5 und pH = 7 liegt, d.h. jeweils einen Faktor 10 unter bzw. oberhalb der pK-Werte. In diesem pH-Bereich sollte sich somit Gl.(60) zu Gl.(67) oder in logarithmischer Form Gl.(68) vereinfachen lassen:  
+  
+\begin{equation} 
+\tag{67}
+\\  
+[H_{2}A] \approx \frac{C_{0}}{\frac{K_{1}}{[H^+]}} = \frac{C_{0} * [H^+]}{{K_{1}}}
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{68}
+\\  
+log_{10}([H_{2}A]) \approx log_{10}(C_{0}) -pH + pK_{1}
+\\  
+\end{equation} 
+  
+Ob diese Abschätzung zuverlässig ist, können wir z.B. dadurch prüfen, dass wir den Ausdruck im Nenner von Gl.(60) und gegen den vereinfachten Ausdruck aus Gl.(67) auftragen (Abb.14).  
+  
+
+```{r fig.cap=paste("__Abb.14__ Auftragung des Nenners von Gl.(60) gegen den vereinfachten Ausdruck K~1~/[H^+^] für den pH-Bereich zwischen pK~1~ und pK~2~."), fig.align = "center"}
+
+K1 = 10^-4
+
+K2 = 10^-8
+
+pH = seq(3, 9, 0.1)
+
+K1_H = K1 / 10^-pH
+
+K1K2_H2 = K1 * K2 / (10^-pH)^2
+
+plot(pH, K1_H, "l", log = "y", lwd = 2, ylab = "")
+
+lines(pH, 1 + K1_H + K1K2_H2, "l", col = "red", lwd = 2)
+
+grid()
+
+legend("topleft", legend = c(expression("K"[1]*" / "*"["*H^"+"~"]"), 
+  expression(1 + "K"[1]*" / "*"["*H^"+"~"]" + "K"[1]*"K"[2]*" / "*"["*H^"+"~"]"^2)),
+  lwd = 2, col = c("black", "red"))
+```
+  
+Die Auftragung belegt die Zulässigkeit der Abschätzung nach Gl.(67) im Bereich zwischen pK~1~ und pK~2~, anhand der logarithmierten Form Gl.(68) erwarten wir im log-pH-Diagramm für die Konzentration von H~2~A eine Gerade mit Steigung -1 und Ordinatenabschnitt log~10~(C~0~) + pK~1~.  
+  
+Das log-pH-Diagramm für eine zweibasige Säure mit pK~1~ = 4 und pK~2~ = 8 für C~0~ = 0.1 mol / l ist in Abb.15 aufgetragen. Für H~2~A erkennen wir die für die drei pH-Bereiche abgeleiteten Näherungen. Für HA^-^ und A^2-^ erkennen wir ähnliche Gesetzmäßigkeiten, die zugehörigen Gleichungen in ihrer logarithmierten Form beschreiben Geraden mit Steigungen von 0, +/- 1, +/- 2 (in der log-log-Auftragung). Neben den beiden Pufferbereichen bei pH = pK~1~ und pH = pK~2~ finden wir einen weiteren interessanten Punkt bei pH = (pK~1~ + pK~2~) / 2. Hier sind die Konzentrationen von H~2~A und A^2-^ identisch sowie beide klein gegen die Konzentration von HA^-^.  
+
+```{r fig.cap=paste("__Abb.15__ log-pH-Diagramm für eine zweibasige Säure mit pK~1~ = 4 und pK~2~ = 8. C~0~ = 0.1 mol / l"), fig.width = 7, fig.height = 7, fig.align = "center"}
+
+# log-pH-Diagramm zweibasige Säure
+
+par(mar = c(5, 5, 5, 5) + 0.1)
+
+Kw = 1E-14
+
+pH = seq(from = 0, to = 14, length.out = 100)
+
+H = 10^-pH
+
+OH = Kw / H
+
+C0 = 0.1
+
+pK1 = 4
+pK2 = 8
+
+K1 = 10 ^ -pK1
+K2 = 10 ^ -pK2
+
+H2A = C0 / (1 + K1 / H + K1 * K2 / H^2)
+
+HA = K1 / H * H2A
+
+A = K1 * K2 / H^2 * H2A
+
+
+plot(pH, log10(H), "l", xlab = "", ylab = "", xlim = c(0, 14), ylim = c(-14, -1), axes  = FALSE)
+
+pHMarker = c(0:14)
+
+cMarker = 10 ^ -pHMarker
+
+abline(h = log10(cMarker), col = "grey")
+
+abline(v = pHMarker, col = "grey")
+
+abline(v = pK1, col = "blue", lwd = 1)
+abline(v = pK2, col = "blue", lwd = 1)
+abline(v = 0.5 * (pK1 + pK2), col = "blue", lwd = 1, lty = "dotted")
+
+lines(pH, log10(OH), "l")
+
+# new
+
+lines(pH, log10(H2A), col = "red", lwd = 2)
+lines(pH, log10(HA), col = "red", lwd = 2, lty = "dashed")
+lines(pH, log10(A), col = "red", lwd = 2, lty = "dotted")
+
+axis(2)
+
+mtext("log(C)", side = 2, line = 3)
+
+axis(3)
+
+mtext("pH", side = 3, line = 3)
+
+# Linien und wichtige Schnittpunkte markieren
+
+text(1, -14, expression("["*OH^"-"~"]") )
+
+text(14, -12.5, expression("["*H^"+"~"]") )
+
+text(0.5, log10(C0) - 0.5, expression("["*H[2]*A*"]"))
+
+text(0.5, log10(HA[1]) - 0.5, expression("["*HA^"-"*"]"))
+
+text(0.5, log10(A[1]) + 3, expression("["*A^"2-"*"]"))
+
+box()
+```
+  
+Was wir an diesem Punkt beobachten ist die Autoprotolyse der Säure HA^-^ gemäß Gl.(69),  
+  
+\begin{equation} 
+\tag{69}
+\\  
+2 HA^- = H_{2}A + A^{2-}
+\\  
+\end{equation}  
+  
+die gleiche Mengen an H~2~A und A^2-^ liefert. Diesen Zusammenhang können wir nutzen, um mit der durch Multiplikation von Gl.(48) und Gl.(49) erhaltenen Gl.(70) den pH-Wert an dieser Stelle zu berechnen.  
+  
+\begin{equation} 
+\tag{70}
+\\  
+K_{1} * K_{2} = \frac{[H^+]^2 * [A^{2-}]}{[H_{2}A]}
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{71}
+\\  
+[H^+] = \sqrt{K_{1} * K_{2}}
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{72}
+\\  
+pH = \frac{1}{2} (pK_{1} + pK_{2})
+\\  
+\end{equation}  
+  
+Gl.(69) lässt sich mit folgenden Überlegungen erklärend herleiten: Dissoziation von HA^-^ führt nach Gl.(49) zur Bildung von A^2-^ und H^+^. Gemäß Gl.(48) liegt das Gleichgewicht [H~2~A] zu [H^+^] * [HA^-^] aufgrund von K~1~ << 1 sehr weit auf der Seite von [H~2~A], so dass effektiv statt Wasser (Bildung von "H^+^") HA^-^ von HA^-^ protoniert wird. Über Gl.(71) / Gl.(72) können wir also den pH-Wert einer Salzlösung MHA berechnen, wobei M für ein Kation, z.B. Natrium^+^ steht.     
+  
+<br>  
+
+\newpage  
+
+## log-pH-Diagramm einer dreibasigen Säure  
+  
+Das log-pH-Diagramm einer dreibasigen Säure wollen wir nun nicht mehr im Detail herleiten sondern lediglich gemäß Gl.(60) - Gl.(62), resp. Gl.(63) & Gl.(64) die Ausdrücke für die jeweiligen Konzentrationen angeben:  
+  
+\begin{equation} 
+\tag{73}
+\\  
+[H_{3}A] = \frac{C_{0}}{1 + \frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2} + \frac{K_{1} * K_{2} * K_{3}}{[H^+]^3}}
+\\  
+\end{equation}   
+  
+  
+\begin{equation} 
+\tag{74}
+\\  
+[H_{2}A^-] = \frac{K_{1}}{[H^+]}* [H_{3}A]
+\\  
+\end{equation}   
+  
+\begin{equation} 
+\tag{75}
+\\  
+[HA^{2-}] = \frac{K_{1} * K_{2}}{[H^+]^2} * [H_{3}A]
+\\  
+\end{equation}   
+  
+\begin{equation} 
+\tag{76}
+\\  
+[A^{3-}] = \frac{K_{1} * K_{2} * K_{3}}{[H^+]^3} * [H_{3}A]
+\\  
+\end{equation}   
+  
+Ein Beispieldiagramm für eine Säure mit pK~1~ = 2, pK~2~ = 6, pK~3~ = 10 und C~0~ = 0.1 mol / l ist in Abb.16 dargestellt.  
+  
+```{r fig.cap=paste("__Abb.16__ log-pH-Diagramm für eine dreibasige Säure mit pK~1~ = 2 und pK~2~ = 6, pK~3~ = 10 und C~0~ = 0.1 mol / l"), fig.width = 7, fig.height = 7, fig.align = "center"}
+
+# log-pH-Diagramm dreibasige Säure
+par(mar = c(5, 5, 5, 5) + 0.1)
+
+Kw = 1E-14
+
+pH = seq(from = 0, to = 14, length.out = 100)
+
+H = 10^-pH
+
+OH = Kw / H
+
+C0 = 0.1
+
+pK1 = 2
+pK2 = 6
+pK3 = 10
+
+K1 = 10 ^ -pK1
+K2 = 10 ^ -pK2
+K3 = 10 ^ -pK3
+
+
+H3A = C0 / (1 + K1 / H + K1 * K2 / H^2 + K1 * K2 * K3 / H^3)
+
+H2A = K1 / H * H3A
+
+HA = K1 * K2 / H^2 * H3A
+
+A = K1 * K2 * K3 / H^3 * H3A
+
+
+plot(pH, log10(H), "l", xlab = "", ylab = "", xlim = c(0, 14), ylim = c(-14, -1), axes  = FALSE, asp = 1)
+
+pHMarker = c(0:14)
+
+cMarker = 10 ^ -pHMarker
+
+abline(h = log10(cMarker), col = "grey")
+
+abline(v = pHMarker, col = "grey")
+
+abline(v = pK1, col = "blue", lwd = 1)
+abline(v = pK2, col = "blue", lwd = 1)
+abline(v = pK3, col = "blue", lwd = 1)
+abline(v = 0.5 * (pK1 + pK2), col = "blue", lwd = 1, lty = "dotted")
+abline(v = 0.5 * (pK2 + pK3), col = "blue", lwd = 1, lty = "dotted")
+
+lines(pH, log10(OH), "l")
+
+# new
+
+lines(pH, log10(H3A), col = "red", lwd = 2)
+lines(pH, log10(H2A), col = "red", lwd = 2, lty = "dashed")
+lines(pH, log10(HA), col = "red", lwd = 2, lty = "dotdash")
+lines(pH, log10(A), col = "red", lwd = 2, lty = "dotted")
+
+axis(2)
+
+mtext("log(C)", side = 2, line = 3)
+
+axis(3)
+
+mtext("pH", side = 3, line = 3)
+
+box()
+```
+\newpage 
+<br><br><br><br><br><br><br> 
+
+# Berechnung von Titrationskurven  
+  
+Die Durchführung von Säure-Base-Titrationen[^17] gehört zum Standardrepertoire der Analytischen Chemie und zur Grundausbildung jeden Chemikers. Ein gutes Verständnis der pH-Werte an den Äquivalenzpunkten ist dabei notwendig, um geeignete Indikatoren auszusuchen oder zu beurteilen, ob z.B. bei mehrbasigen Säuren die einzelnen Neutralisationsstufen voneinander unterschieden oder überhaupt durch Titration bestimmt werden können. Zum letzten Punkt vgl. das Problem, Phosphorsäure in wässriger Lösung auf die dritte Stufe zu titrieren.  
+  
+Bei der Berechnung der Titrationskurven können wir natürlich so vorgehen wie bei der Titration selbst - soll heißen, wir versuchen, den pH-Wert einer vorgegebenen Mischung der Säure mit einer bestimmten Menge Base zu ermitteln und führen diese Berechnung für verschiedene Basenmengen durch. Dabei stoßen wir wieder auf das Problem, dass wir komplexe Gleichungen lösen müssen, wobei wir als Ansatz die allgemeinen Gleichungen Gl.(63) und Gl.(64) (ggf. für jede Säure in der Vorlage) mit der Autoprotolyse des Wassers sowie der Bedingung der Elektroneutralität verknüpfen. Die Auflösung nach [H^+^] wird i.d.R. nicht gelingen, weshalb wir wieder mit der impliziten Formulierung F(C~0~ ~Säure~, C~0~ ~Base~, [H^+^]) = 0 arbeiten und die Nullstelle mit numerischen Näherungsverfahren suchen.  
+  
+Einen einfacheren Lösungsweg finden wir wiederum, wenn wir das Problem von einem anderen Winkel aus betrachten: geben wir den pH-Wert vor, so können wir über Gl.(63) und Gl.(64) die Konzentrationen aller Säureanionen und der nicht-dissoziierten Säure berechnen. Aus dem Grundsatz der Elektroneutralität können wir dann die Konzentration der über die Basenzugabe zuzufügenden Kationen und daraus das notwendige Volumen der Basenlösung berechnen.  
+Bei dieser Vorgehensweise werden wir mit zwei "Artefakten" rechnen müssen: geben wir einen pH-Wert vor, der unterhalb des initialen pH-Werts der Säurelösung liegt, werden wir ein negatives Volumen an zuzugebender Base berechnen. Dies ist in sich schlüssig, da eine Erniedrigung des pH-Werts der Zugabe einer stärkeren Säure bedarf - was formal einer negativen Menge an Base entspricht. Ein zweites Problem tritt auf, wenn wir einen pH-Wert vorgeben, der über dem pH-Wert der zur Titration verwendeten Base liegt. Dieses Artefakt müssen wir dadurch unterbinden, dass wir statt der berechneten Kationenkonzentration das Basenvolumen verwenden und die Verdünnungseffekte berücksichtigen.  
+  
+Damit unser R-Code gleich von Anfang an die notwendige Flexibilität aufweist, werden wir die Herleitung der notwendigen Gleichungen für eine dreibasige Säure durchführen. Aus der Elektroneutralitätsbedingung erhalten wir Gl.(77):  
+  
+  
+\begin{equation} 
+\tag{77}
+\\  
+[Kat^+] + [H^+] = [H_{2}A^-] + 2 * [HA^{2-}] + 3 * [A^{3-}] + [OH^-]
+\\  
+\end{equation}   
+  
+Unter Verwendung von Gl.(63) und Gl.(64) sowie dem Ersatz von [OH^-^] durch K~W~ / [H^+^] ergibt sich:
+  
+  
+\begin{equation} 
+\tag{78}
+\\  
+[Kat^+] = \bigg(\frac{K_{1}}{[H^+]} + \frac{2 * K_{1} * K_{2}}{[H^+]^2} + \frac{3 * K_{1} * K_{2} * K_{3}}{[H^+]^3}\bigg) * \frac{C_{0}}{1 + \frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2} + \frac{K_{1} * K_{2} * K_{3}}{[H^+]^3}} + \frac{K_{W}}{[H^+]} - [H^+] 
+\\  
+\end{equation}  
+  
+Den Effekt der Verdünnung können wir leicht über Gl.(79) und Gl.(80) einführen:  
+  
+\begin{equation} 
+\tag{79}
+\\  
+[Kat^+] = \frac{V_{B}}{V_{0} + V_{B}} * C_{B}^*
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{80}
+\\  
+C_{0} = \frac{V_{0}}{V_{0} + V_{B}} * C_{0}^*
+\\  
+\end{equation}  
+  
+Hierbei sollen C~0~* und C~B~* jeweils für die ursprünglichen Konzentrationen der Säure und der zur Titration verwendeten Base stehen. V~0~ bezeichnet das vorgelegte Volumen der Säure, V~B~ das zuzugebende Volumen der Base.  
+Ersetzen wir in Gl.(78) die Ausdrücke für [Kat^+^] und C~0~ durch Gl.(79) und Gl.(80), so erhalten wir Gl.(81):  
+  
+\begin{equation} 
+\tag{81}
+\\  
+\frac{V_{B}}{V_{0} + V_{B}} * C_{B}^* = \bigg(\frac{K_{1}}{[H^+]} + \frac{2 * K_{1} * K_{2}}{[H^+]^2} + \frac{3 * K_{1} * K_{2} * K_{3}}{[H^+]^3} \bigg) * \frac{\frac{V_{0}}{V_{0} + V_{B}} * C_{0}^*}{1 + \frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2} + \frac{K_{1} * K_{2} * K_{3}}{[H^+]^3}} + \frac{K_{W}}{[H^+]} - [H^+] 
+\\  
+\end{equation}  
+  
+Zur besseren Übersicht können wir folgende Zusammenfassung treffen:  
+  
+\begin{equation} 
+\tag{82}
+\\  
+\frac{K_{1}}{[H^+]} + \frac{2 * K_{1} * K_{2}}{[H^+]^2} + \frac{3 * K_{1} * K_{2} * K_{3}}{[H^+]^3} = A
+\\  
+\end{equation}  
+  
+\begin{equation} 
+\tag{83}
+\\  
+\frac{K_{1}}{[H^+]} + \frac{K_{1} * K_{2}}{[H^+]^2} + \frac{K_{1} * K_{2} * K_{3}}{[H^+]^3} = B
+\\  
+\end{equation}  
+  
+Gl.(81) ist etwas länglich, jedoch leicht nach V~B~ aufzulösen:  
+  
+\begin{equation} 
+\tag{84}
+\\  
+V_{B} = \frac{V_{0}}{C_{B}^* + [H^+] - \frac{K_{W}}{[H^+]}} * \bigg(\frac{A * C_{0}^*}{1 + B} + \frac{K_{W}}{[H^+]} - [H^+] \bigg)
+\\  
+\end{equation}  
+  
+Der Aufwand, Gl.(84) herzuleiten, hat sich gelohnt: wir können nun die Titrationsdiagramme von bis zu dreibasigen Säuren berechnen. Für die Anwendung von Gl.(84) für eine einbasige oder zweibasige Säure müssen wir lediglich K~2~ bzw. K~3~ auf null setzen. Für die Umsetzung berechnen wir V~B~ für einen vorgegebenen pH-Bereich und beschränken für die Darstellung dann unsere Daten auf den Bereich V~B~ = 0 bis z.B. V~B~ äquivalent zur doppelten Protonenmenge in der vorgegebenen Säure.  
+  
+
+```{r fig.cap=paste("__Abb.17__ Titrationskurve für eine dreibasige Säure mit pK~1~ = 2 und pK~2~ = 6, pK~3~ = 10 und C~0~ = 0.1 mol / l. 100 mL Säure mit einer starken, einbasigen Säure mit C~B~^*^ = 0.1 mol / l titriert."), fig.align = "center"}
+
+C00 = 0.1
+
+V0 = 100
+
+CB00 = 0.1
+
+pK1 = 2
+pK2 = 6
+pK3 = 10
+
+K1 = 10^-pK1
+K2 = 10^-pK2
+K3 = 10^-pK3
+
+KW = 1E-14
+
+pH = seq(from = 0, to = 14, by = 0.01)
+
+H = 10^-pH
+
+K1H = K1 / H
+K12H2 = K1 * K2 / H^2
+K123H3 = K1 * K2 * K3 / H^3
+
+equivAnionen = (K1H + 2 * K12H2 + 3 * K123H3) * C00 / (1 + K1H + K12H2 + K123H3)
+
+VB = V0 / (CB00 + H - KW / H) * (equivAnionen + KW / H - H)
+
+curveData = data.frame(pH, VB)
+
+# Bereich für Plot VB festlegen
+
+# Protonenzahl der Säure
+
+nProt = 1
+
+if (K2 != 0) nProt = 2
+if (K2 * K3 != 0) nProt = 3
+
+VBMax = (nProt + 1) * (V0 * C00) / CB00
+
+# Unsinnige Volumina zugegebene Base aus Datensatz entfernen
+
+curveData = curveData[(curveData$VB > 0 & curveData$VB <= VBMax), ]
+
+plot(curveData$VB, curveData$pH, "l", xlab = "Volumen Base", ylab = "pH")
+
+grid()
+
+```
+  
+Abb.17 zeigt die Titrationskurve für eine dreibasige Säure mit den pK-Werten 2, 6, 10 und einer Konzentration von 0.1 mol / l. Die Titration wurde für eine starke Base mit C~0~ = 0.1 mol / l simuliert. Man erkennt drei pH-Sprünge an den jeweiligen Äquivalenzpunkten, wobei der dritte pH-Sprung schon recht unscharf ausfällt. Ebenfalls erkennbar sind die drei Pufferbereiche bei pH = pK~i~ sowie die pH-Werte an den ersten beiden Äquivalenzpunkten, die jeweils bei pH = 1/2 (pK~i~ + pK~i+1~) liegen. Mit dem R-Code bzw. der zugehörigen Shiny-App[^18][^19] kann der Leser nun selbst experimentieren und z.B. folgende Fragen untersuchen:  
+  
+1. Bis zu welchem pK-Wert lässt sich eine Säure vernünftig in Wasser titrieren?
+2. Wie weit müssen zwei pK-Werte auseinanderliegen, um die beiden Äquivalenzpunkte sauber zu trennen?
+3. Bricht die Näherung pH = 1/2 (pK~i~ + pK~i+1~) bei gewissen pK-Werten zusammen? Warum?
+
+__Weiterführende Themen__  
+
+* Maßanalyse, Titration allgemein[^20]
+* pH-Indikatoren[^21]
+* Indikatorfehler
+  
+\newpage 
+<br><br><br><br><br><br><br> 
+
+# pH-Berechnung für beliebige teilneutralisierte Säuren  
+  
+Für die genauere Untersuchung der Frage 3 aus Kapitel 5 bietet es sich an, doch noch den pH-Wert für eine vordefinierte Säure-Base-Mischung zu berechnen. Wir wollen hierbei so vorgehen, dass wir den Neutralisationsgrad der Säure vorgeben, wobei sich der Neutralisationsgrad auf die insgesamt vorhandene Protonenmenge in der Säure beziehen soll. Für Phosphorsäure würde ein Neutralisationsgrad von 33% dementsprechend einer Lösung von z.B. NaH~2~PO~4~ entsprechen.  
+Wir gehen wieder von Gl.(77) aus und formen zur impliziten Gl.(85) um. Dabei ist zu beachten, dass Gl.(85) komplexer ist als es in der Kompakten Formulierung erscheint, da [H~2~A^-^], [HA^2-^] und [A^3-^] ja ihrerseits wieder von [H^+^] abhängen. Bei der Ermittlung der "richtigen" Protonenkonzentration kommt uns die R-Funktion *uniroot* zu Hilfe, die automatisch Nullstellen von vorgegebenen Funktionen ermittelt.  
+  
+\begin{equation} 
+\tag{85}
+\\  
+[H_{2}A^-] + 2 * [HA^{2-}] + 3 * [A^{3-}] + [OH^-] - [Kat^+] - [H^+] = 0
+\\  
+\end{equation}  
+  
+Um den R-Code und den zugehörigen Plot etwas spannender zu machen, entwickeln wir für eine Säure mit bis zu drei Dissoziationsstufen und variieren automatisch die erste Dissoziationskonstante. Für Gütebetrachtungen geben wir als Hilfslinie die Näherung pH = 1/2 (pK~1~ + pK~2~) für den erwarteten ersten Äquivalenzpunkt an.  
+  
+```{r fig.cap=paste("__Abb.18__ pH-Berechnung für eine teilneutralisierte Säure unter Variation von pK~1~. Hier gewählt: pK~1~ = 2, pK~2~ = 6, pK~3~ = 10, C~0~ = 0.1 mol / l, Neutralisationsgrad 33%."), fig.align = "center"}
+
+C0 = 0.1
+
+neutGrad = 1 / 3
+
+pK1 = 2
+pK2 = 6
+pK3 = 10
+
+K1 = 10^-pK1
+K2 = 10^-pK2
+K3 = 10^-pK3
+
+KW = 1E-14
+
+nProt = 1
+
+if (K2 != 0) nProt = 2
+if (K2 * K3 != 0) nProt = 3
+
+FImplizit = function(x) {
+  
+K1H = K1 / x
+K12H2 = K1 * K2 / x^2
+K123H3 = K1 * K2 * K3 / x^3
+
+equivAnionen = (K1H + 2 * K12H2 + 3 * K123H3) * C0 / (1 + K1H + K12H2 + K123H3)
+
+FImplizitValue = equivAnionen + KW / x - x - nProt * neutGrad * C0
+
+return(FImplizitValue)
+  
+}
+
+pH = numeric()
+
+pK1Var = seq(from = -5, to = pK2, by = 0.01)
+
+for (i in seq_along(pK1Var)) {
+  
+  K1 = 10^-pK1Var[i]
+  
+  pH[i] = -log10(uniroot(FImplizit, c(1E-14, 10), tol = 1E-12)[[1]])
+  
+}
+
+plot(pK1Var, pH, "l", xlab = "pK1", ylab = "pH")
+
+legend("topleft", legend = c("genaue Berechnung", expression(1/2 (pK[1] + pK[2]))), 
+  lwd = 2, col = c("black", "red"), bty = "n" )
+
+lines(pK1Var, 1/2 * (pK1Var + pK2), col = "red")
+
+```
+  
+Aus Abb.18 können wir ablesen, dass unsere Näherung pH = 1/2 (pK~1~ + pK~2~) unterhalb von pK~1~ &#8776; 2 ihre Gültigkeit verliert. In unserem Beispiel nähert sich der pH-Wert der Teilneutralisierten Lösung (33%, entspricht einer Lösung von MetH~2~A, Met z.B. Na^+^, A z.B. PO~4~^3-^) pH = 3.5 für eine in der ersten Dissoziationsstufe zunehmend stärkeren Säure an. Woran liegt das? Der pH-Grenzwert von pH = 3.5 entspricht dem Wert einer reinen Lösung einer zweibasigen Säure H~2~A mit pK~1~ = 6 und pK~2~ = 10. Es scheint also, als würde nach der Teilneutralisation die erste Dissoziationsstufe unserer dreibasigen Säure "verschwinden"! Die Erklärung liegt in der Tatsache begründet, dass eine Säure mit einem pK-Wert von kleiner 2 schnell zunehmende Eigendissoziation zeigt, vgl. Abb.9. Das Säureanion wird dementsprechend durch H~3~O^+^ am Ende nicht mehr protoniert, die für die Herleitung der Näherung pH = 1/2 (pK~1~ + pK~2~) getroffenen Annahmen brechen damit zusammen.  
+  
+\newpage   
+<br><br><br><br><br><br><br> 
+
+# Anhang - Anmerkungen zu R  
+  
+An dieser Stelle soll keine Einführung in R gegeben werden. Im Internet sind ausreichend frei zugängliche Dokumentationen verfügbar. Als schneller Einstieg sei die Einführung des R-Core-Teams empfohlen.[^22]  
+Dieses Tutorial ist als pdf-Datei und als Rmd-File (R Markdown) verfügbar.[^23] Das Rmd-File enthält den R-Code für die dargestellten Abbildungen. Der Code ist beim Öffnen des Rmd-Files in RStudio direkt verfügbar und kann vom Nutzer angepasst werden - im geringsten Umfang z.B. durch Anpassung der Konzentrationswerte, Bereiche, innerhalb derer Variablen variiert werden, etc. bis hin zu deutlichen Änderungen.  
+Ein Teil des Codes ist darüber hinaus in Form einer Shiny-App zugänglich (interaktiver Web-Zugiff unter [^19], oder Zugriff auf den App-Code auf GitHub [^23]). Diese interaktive App erlaubt direkte Variationen durch den Nutzer, z.B. beim Experimentieren mit Titrationsdiagrammen oder der Darstellung von (log)C-pH-Diagrammen.  
+  
+Zum Verständnis der Code-Beispiele seien hier noch die folgenden Anmerkungen geben:  
+Die Code-Blöcke sind in der Regel simpel und in einer linearen, durch die zu untersuchenden Formeln vorgegebene Logik programmiert.  
+Einzelne Werte können in R durch simple Zuweisung, z.B. x = 5 gesetzt werden. R unterstützt dabei die Vektorisierung: x = c(1,2,3) y = (4,5,6) erzeugt zwei Vektoren, wobei Operationen mit diesen Vektoren wie z = x + y, x * y, x ^ y, etc. elementweise durchgeführt werden. Dies erleichtert das Programmieren, wenn z.B. Variationen entlang einer Koordinate wie dem pK-Wert einer Säure durchgeführt werden sollen. Hier würde man den pK-Wert recht kompakt als pK = seq(from = 0, to = 14, by = 0.1) definieren und den "Vektor" von 0 bis 14 in 0.1-Schritten laufen lassen. Bei Berechnungen mit dem so definierten Vektor wird dann wiederum ein Vektor erzeugt, der für jedes Element von pK ein entsprechendes Element mit dem Ergabnis der Rechnung enthält. Ein Beispiel wäre die Berechnung der zu pK gehörenden K-Werte nach K = 10^-pK.  
+Nebenbemerkung: Vektor und Matrixoperationen im mathematischen Sinn sind in R ebenfalls verfügbar, müssen jedoch ggf. besonders gekennzeichnet werden.  
+R erlaubt die Definition von Funktionen. Diese werden im hier vorgestellten Code dort genutzt, wo über numerische Routinen die Nullstellen von Funktionen gesucht werden.  
+  
+\newpage   
+<br><br><br><br><br><br><br> 
+
+# Literatur  
+  
+
+[^1]: R Core Team (2017). R: A language and environment for statistical computing. R Foundation for
+  Statistical Computing, Vienna, Austria. URL https://www.R-project.org/  
+[^2]: https://rstudio.com/
+[^3]: https://www.libreoffice.org/   
+[^4]: https://de.wikipedia.org/wiki/Chemisches_Gleichgewicht
+[^5]: https://de.wikipedia.org/wiki/Gibbs-Energie
+[^6]: https://de.wikipedia.org/wiki/Massenwirkungsgesetz
+[^7]: https://de.wikipedia.org/wiki/Säure-Base-Konzepte
+[^8]: https://de.wikipedia.org/wiki/Titration
+[^9]: https://de.wikipedia.org/wiki/Puffer_(Chemie)
+[^10]: https://de.wikipedia.org/wiki/Säurekonstante#pKS-_und_pKB-Werte_einiger_Verbindungen
+[^11]: https://de.wikipedia.org/wiki/Säuren#pKS-Werte_wichtiger_Säuren
+[^12]: https://de.wikipedia.org/wiki/Basen_(Chemie)
+[^13]: https://de.wikipedia.org/wiki/Aktivität_%28Chemie%29
+[^14]: https://de.wikipedia.org/wiki/Debye-Hückel-Theorie
+[^15]: https://de.wikipedia.org/wiki/Van-’t-Hoff-Gleichung
+[^16]: https://de.wikipedia.org/wiki/Protolyse#Autoprotolyse
+[^17]: https://de.wikipedia.org/wiki/Säure-Base-Titration
+[^18]: https://shiny.rstudio.com/
+[^19]: http://exnerkm.shinyapps.io/acid_base_calculator_app  
+[^20]: https://de.wikipedia.org/wiki/Titration
+[^21]: https://de.wikipedia.org/wiki/Indikator_(Chemie)
+[^22]: https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf
+[^23]: https://github.com/exnerkm/Acid-Base-Calculations.git
+
